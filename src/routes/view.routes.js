@@ -5,10 +5,6 @@ import { dbM as dbCart } from './api/carts.routes.js';
 // Importar todos los routers;
 export const router = Router();
 
-router.get("/",async(req,res)=>{
-    res.render("home")
-})
-
 router.get("/products", async (req, res) => {
 
     try {
@@ -54,6 +50,28 @@ router.get("/carts/:cid", async (req, res) => {
         res.render("carts", {
             productos: productos.products
         })
+    } catch (e) {
+        res.send(500).json({ error: e })
+    }
+})
+
+router.get("/login", async (req, res) => {
+
+    if(req.session.email) return res.redirect("/products")
+    try {
+
+        res.render("login")
+    } catch (e) {
+        res.send(500).json({ error: e })
+    }
+})
+
+router.get("/register", async (req, res) => {
+    if(req.session.email) return res.redirect("/products")
+
+    try {
+
+        res.render("register")
     } catch (e) {
         res.send(500).json({ error: e })
     }
