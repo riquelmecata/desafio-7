@@ -22,7 +22,8 @@ router.post("/login", async (req, res) => {
             console.log(user.first_name)
             req.session.email = user.email
             req.session.password = user.password
-            req.session.name = user.first_name
+            req.session.first_name = user.first_name
+            req.session.last_name = user.last_name
             req.session.age = user.age
             req.session.adminRole = user.adminRole
 
@@ -42,18 +43,16 @@ router.get("/pep", async (req, res) => {
 
 })
 
-router.delete('/logout', (req, res) => {
-
-    try {
-        req.session.destroy(() => {
-            res.status(200).json({ success: true, msg: "Session finalizada" })
-
-        })
-    } catch (error) {
-        res.status(400).json({ success: false, error: error.message })
-
-    }
+router.get("/logout", async (req, res) => {
+    req.session.destroy((error) =>{
+        if(error)
+        {
+            return res.json({ status: 'Logout Error', body: error})
+        }
+        res.redirect('../../login')
+    })    
 })
+
 // Endpoint para traer el producto solicitado by id en el params
 
 
@@ -64,8 +63,9 @@ router.post("/register", async (req, res) => {
         email,
         age,
         password,
+        adminRole
     } = req.body
-    if (first_name !== undefined && last_name !== undefined && email !== undefined && age !== undefined && password !== undefined) {
+    if (first_name !== undefined && last_name !== undefined && email !== undefined && age !== undefined && password !== undefined && adminRole !== undefined) {
 
         try {
             let obj = {}
@@ -74,6 +74,7 @@ router.post("/register", async (req, res) => {
             obj.last_name = last_name.toString()
             obj.email = email.toString().toLowerCase()
             obj.age = parseFloat(age)
+            obj.adminRole = adminRole.toString().toLowerCase()
             obj.password = bcrypt.hashSync(password, encryptRounds);
 
             let newUser = await dbM.createUser(obj)
@@ -86,3 +87,4 @@ router.post("/register", async (req, res) => {
     } else return res.status(400).json({ error: "Faltan campos obligatorios" })
 
 })
+

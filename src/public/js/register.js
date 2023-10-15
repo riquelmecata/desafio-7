@@ -5,6 +5,7 @@ const last_name = document.getElementById('last_name')
 const email = document.getElementById('email')
 const age = document.getElementById('age')
 const password = document.getElementById('password')
+const adminRole = document.getElementById('adminRole')
 
 
 
@@ -14,6 +15,7 @@ const resetForm = () => {
     email.value = ''
     age.value = ''
     password.value = ''
+    adminRole.value = ''
 
 }
 
@@ -27,10 +29,11 @@ form.onsubmit = async(e) => {
         email: email.value,
         age: age.value,
         password: password.value,
+        adminRole: adminRole.value
     }
     console.log(user)
     try {
-        await axios.post("http://localhost:8080/api/sessions/registro", user)
+        await axios.post("http://localhost:8080/api/sessions/register", user)
         alert("Registrado")
     } catch (error) {
         console.log(error)

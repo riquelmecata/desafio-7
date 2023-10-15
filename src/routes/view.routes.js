@@ -56,15 +56,19 @@ router.get("/carts/:cid", async (req, res) => {
 })
 
 router.get("/login", async (req, res) => {
-
-    if(req.session.email) return res.redirect("/products")
-    try {
-
-        res.render("login")
-    } catch (e) {
-        res.send(500).json({ error: e })
+    if (req.session.email) {
+        if (req.session.adminRole && req.session.adminRole.toLowerCase() === 'admin') {
+            return res.redirect("/profile");
+        } else {
+            return res.redirect("/products");
+        }
     }
-})
+    try {
+        res.render("login");
+    } catch (e) {
+        res.status(500).json({ error: e });
+    }
+});
 
 router.get("/register", async (req, res) => {
     if(req.session.email) return res.redirect("/products")
@@ -75,4 +79,22 @@ router.get("/register", async (req, res) => {
     } catch (e) {
         res.send(500).json({ error: e })
     }
+})
+
+
+/** esto funciona */
+router.get("/profile", async (req, res) => { 
+    if (!req.session.email) 
+    {
+        return res.redirect("/login")
+    }
+    res.render("profile", {
+        title: "Vista Profile Admin",
+        first_name: req.session.first_name,
+        last_name: req.session.last_name,
+        email: req.session.email,
+        adminRole: req.session.adminRole,
+        age: req.session.age
+
+    });
 })
