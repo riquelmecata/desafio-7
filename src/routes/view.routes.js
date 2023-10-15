@@ -7,12 +7,16 @@ export const router = Router();
 
 router.get("/products", async (req, res) => {
 
+    
+
     try {
         const { limit, page, sort } = req.query
         let on = await dbInstance.getProducts(limit, page, sort)
         let productos = JSON.parse(JSON.stringify(on))
         console.log(productos)
         res.render("products", {
+            email: req.session.email,
+            adminRole: req.session.adminRole,
             hasNextPage: productos.hasNextPage,
             hasPrevPage: productos.hasPrevPage,
             nextLink: productos.nextLink ? `http://localhost:8080/products?page=${productos.page + 1}&limit=${limit?limit:10}` : null,
@@ -56,19 +60,15 @@ router.get("/carts/:cid", async (req, res) => {
 })
 
 router.get("/login", async (req, res) => {
-    if (req.session.email) {
-        if (req.session.adminRole && req.session.adminRole.toLowerCase() === 'admin') {
-            return res.redirect("/profile");
-        } else {
-            return res.redirect("/products");
-        }
-    }
+
+    if(req.session.email) return res.redirect("/products")
     try {
-        res.render("login");
+
+        res.render("login")
     } catch (e) {
-        res.status(500).json({ error: e });
+        res.send(500).json({ error: e })
     }
-});
+})
 
 router.get("/register", async (req, res) => {
     if(req.session.email) return res.redirect("/products")
