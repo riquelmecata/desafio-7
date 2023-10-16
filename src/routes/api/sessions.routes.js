@@ -61,6 +61,10 @@ router.post("/register", async (req, res) => {
     if (first_name !== undefined && last_name !== undefined && email !== undefined && age !== undefined && password !== undefined && adminRole !== undefined) {
 
         try {
+            let existingUser = await dbM.findeUserByEmail(email.toString().toLowerCase());
+            if (existingUser.success) {
+                return res.status(400).json({ error: "El correo electrónico ya está registrado" });
+            }
             let obj = {}
 
             obj.first_name = first_name.toString()
