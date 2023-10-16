@@ -20,8 +20,8 @@ const resetForm = () => {
 }
 
 
-form.onsubmit = async(e) => {
-    e.preventDefault()
+form.onsubmit = async (e) => {
+    e.preventDefault();
 
     const user = {
         first_name: first_name.value,
@@ -30,14 +30,31 @@ form.onsubmit = async(e) => {
         age: age.value,
         password: password.value,
         adminRole: adminRole.value
-    }
-    console.log(user)
+    };
+
     try {
-        await axios.post("http://localhost:8080/api/sessions/register", user)
-        alert("Registrado")
+        const response = await axios.post("http://localhost:8080/api/sessions/register", user);
+        const data = response.data;
+
+        if (data.result) {
+            // Mostrar SweetAlert si el registro es exitoso
+            Swal.fire({
+                title: 'Registrado',
+                text: '¡Registro exitoso! ¿Desea ir a la página de inicio de sesión?',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: 'Sí',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'http://localhost:8080/login'; // Redirige a la página de inicio de sesión
+                } else {
+                    resetForm();
+                }
+            });
+        }
     } catch (error) {
-        console.log(error)
-        alert(error.response.data.error)
+        console.log(error);
+        alert(error.response.data.error);
     }
-    resetForm()
-}
+};

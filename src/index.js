@@ -9,7 +9,6 @@ import { router as sessionRouter } from "./routes/api/sessions.routes.js"
 import "./dao/dbConfig.js"
 
 import session  from "express-session";
-import cookieParser from "cookie-parser";
 import  FileStore  from "session-file-store";
 
 

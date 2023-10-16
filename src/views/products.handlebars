@@ -1,3 +1,14 @@
+<div class="container text-center">
+    <ul class="nav justify-content-center">
+        <li class="nav-item my-2">
+            <a class="btn btn-outline-dark" href="http://localhost:8080/products?page=1&limit=10">Productos</a>
+        </li>
+        <li class="nav-item my-2 mx-2">
+            <a class="btn btn-outline-dark" href="http://localhost:8080/carts/651cd552fef520effdaae934">Carrito</a>
+        </li>
+    </ul>
+</div>
+
 <h4>Bienvenido: {{email}}</h4><p>Rol: {{adminRole}}</p><h3><a href="/api/sessions/logout">Cerrar sesión</a></h3>
 
 {{#if productos.length }}

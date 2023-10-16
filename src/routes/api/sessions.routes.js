@@ -1,12 +1,10 @@
 import { Router } from 'express';
-import bcrypt from "bcrypt"
 import UserManager from '../../dao/mongomanagers/userManager.js';
 
 export const dbM = new UserManager()
 
 // Importar todos los routers;
 export const router = Router();
-let encryptRounds = 1
  
 router.post("/login", async (req, res) => {
 
@@ -17,7 +15,7 @@ router.post("/login", async (req, res) => {
         let finded = await dbM.findeUserByEmail(email.toString().toLowerCase())
         if (!finded.success) return res.status(200).json({ success: false, error: "usuario no encontrado" })
         let user = JSON.parse(JSON.stringify(finded.success))
-        if (bcrypt.compareSync(password, user.password)) {
+        if (password === user.password) {
             console.log(user.first_name)
             req.session.email = user.email
             req.session.password = user.password
@@ -30,7 +28,7 @@ router.post("/login", async (req, res) => {
 
         }
         else {
-            res.status(400).json({ success: false, error: "Contraseña incorrecto" })
+            res.status(400).json({ success: false, error: "Contraseña incorrecta" })
         }
 
     } catch (e) {
@@ -68,12 +66,15 @@ router.post("/register", async (req, res) => {
             obj.first_name = first_name.toString()
             obj.last_name = last_name.toString()
             obj.email = email.toString().toLowerCase()
-            obj.age = parseFloat(age)
-            obj.adminRole = adminRole.toString().toLowerCase()
-            obj.password = bcrypt.hashSync(password, encryptRounds);
+            if (isNaN(parseFloat(age))) {
+                return res.status(400).json({ error: "La edad debe ser un número válido" });
+            }
+            obj.age = parseFloat(age);
+            obj.adminRole = adminRole.toString().toLowerCase();
+            obj.password = password; 
 
             let newUser = await dbM.createUser(obj)
-            if (!newUser.success) res.status(400).json({ error: "no se pudo crear" })
+            if (!newUser.success) res.status(400).json({ error: "No se pudo crear el usuario" })
             // return res.redirect("../../login")
             res.status(200).json({ result: newUser.success })
         } catch (e) {
