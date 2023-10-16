@@ -11,24 +11,25 @@ const resetForm = () => {
 }
 
 form.onsubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     const user = {
         email: email.value,
         password: contraseña.value,
-    }
-
-    
+    };
 
     try {
-        const { data } = await axios.post("http://localhost:8080/api/sessions/login", user)
-        console.log(data)
-        window.location.replace('http://localhost:8080/products')
-        resetForm()
-    } catch (error) {
-        console.log(error)
-        alert(error.response.data.error)
-    }
-    
+        const { data } = await axios.post("http://localhost:8080/api/sessions/login", user);
 
-}
+        if (data.adminRole && data.adminRole.toLowerCase() === 'admin') {
+            window.location.replace('http://localhost:8080/profile');
+        } else {
+            window.location.replace('http://localhost:8080/products');
+        }
+        
+        resetForm();
+    } catch (error) {
+        console.log(error);
+        alert(error.response.data.error);
+    }
+};

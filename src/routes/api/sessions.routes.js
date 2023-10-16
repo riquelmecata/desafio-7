@@ -7,8 +7,7 @@ export const dbM = new UserManager()
 // Importar todos los routers;
 export const router = Router();
 let encryptRounds = 1
-
-
+ 
 router.post("/login", async (req, res) => {
 
     try {
@@ -27,7 +26,7 @@ router.post("/login", async (req, res) => {
             req.session.age = user.age
             req.session.adminRole = user.adminRole
 
-            res.status(200).json({ result: true })
+            res.status(200).json({ result: true, adminRole: user.adminRole  })
 
         }
         else {
@@ -37,11 +36,7 @@ router.post("/login", async (req, res) => {
     } catch (e) {
         res.status(500).json({ status: "error", error: e.message })
     }
-})
-
-router.get("/pep", async (req, res) => {
-
-})
+}) 
 
 router.get("/logout", async (req, res) => {
     req.session.destroy((error) =>{
